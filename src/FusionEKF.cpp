@@ -31,6 +31,8 @@ FusionEKF::FusionEKF() {
         0, 0.0009, 0,
         0, 0, 0.09;
 
+  //set the acceleration noise components
+
   /**
   TODO:
     * Finish initializing the FusionEKF.
@@ -52,6 +54,10 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
    *  Initialization
    ****************************************************************************/
   if (!is_initialized_) {
+    //ekf_.x_ = measurement_pack.raw_measurements_[0];
+    // kf_.x_ << measurement_pack.raw_measurements_[0], measurement_pack.raw_measurements_[1], 0, 0;
+    //previous_timestamp_ = measurement_pack.timestamp_;
+
     /**
     TODO:
       * Initialize the state ekf_.x_ with the first measurement.
