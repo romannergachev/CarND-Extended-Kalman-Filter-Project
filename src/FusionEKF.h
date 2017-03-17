@@ -44,6 +44,8 @@ private:
   Eigen::MatrixXd R_radar_;
   Eigen::MatrixXd H_laser_;
   Eigen::MatrixXd Hj_;
+  const float NOISE_AY = 9;
+  const float NOISE_AX = 9;
 };
 
 #endif /* FusionEKF_H_ */
