@@ -52,9 +52,9 @@ MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
   double root3 = squares*root;
 
   if (squares > 0.0001) {
-    Hj << px/root, py/root, 0, 0,
-      (-1) * py/squares, px/squares, 0, 0,
-      py * (vx*py - vy*px)/root3, px * (vy*px - vx*py)/root3, px/root, py/root;
+    Hj << px/root,                    py/root,                    0,       0,
+          (-1) * py/squares,          px/squares,                 0,       0,
+          py * (vx*py - vy*px)/root3, px * (vy*px - vx*py)/root3, px/root, py/root;
   }
 
 

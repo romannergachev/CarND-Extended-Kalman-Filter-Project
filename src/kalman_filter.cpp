@@ -41,23 +41,33 @@ void KalmanFilter::Update(const VectorXd &z) {
 }
 
 void KalmanFilter::UpdateEKF(const VectorXd &z) {
+
+  h(x) = Jacobian * (x)
+  z = h(x) + nu
+  x = f(x) + omega
+
+    y = z - H*x
+
   Tools tools;
-  VectorXd jakobian = tools.CalculateJacobian(x_);
-  VectorXd y = z - jakobian;
-  MatrixXd Ht = H_.transpose();
-  MatrixXd S = H_ * P_ * Ht + R_;
+  MatrixXd jacobian = tools.CalculateJacobian(x_);
+
+  VectorXd z_pred = jacobian * x_;
+  //VectorXd z_pred = jacobian.array() * x_.array();
+  VectorXd y = z - z_pred;
+  MatrixXd jacobianTranspose = jacobian.transpose();
+  MatrixXd S = jacobian * P_ * jacobianTranspose + R_;
   MatrixXd Si = S.inverse();
-  MatrixXd PHt = P_ * Ht;
+  MatrixXd PHt = P_ * jacobianTranspose;
   MatrixXd K = PHt * Si;
 
   //new estimate
+  //todo convert 'y' to cartesian ??
   x_ = x_ + (K * y);
   long x_size = x_.size();
   MatrixXd I = MatrixXd::Identity(x_size, x_size);
   P_ = (I - K * H_) * P_;
 
   /**
-  TODO:
     * update the state by using Extended Kalman Filter equations
   */
 }
