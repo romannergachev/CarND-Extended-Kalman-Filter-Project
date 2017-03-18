@@ -90,11 +90,19 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
     cout << "EKF: " << endl;
     //ekf_.x_ << 1, 1, 1, 1;
 
+    double px = 0.0;
+    double py = 0.0;
+
     if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
       //todo
       /**
       Convert radar from polar to cartesian coordinates and initialize state.
       */
+      double r = measurement_pack.raw_measurements_[0];
+      double theta = measurement_pack.raw_measurements_[1];
+      px = r * cos(theta);
+      py = r * sin(theta);
+
 //      ro = sqrt(px^2 + py^2)
 //      fi = arctan(py/px)
 //      dro/dt = px*vx +py*vy/sqrt(px^2+py^2)
@@ -108,8 +116,11 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 //      dro * sqrt(px^2 + py^2) = px*vx + py*vy
     }
     else if (measurement_pack.sensor_type_ == MeasurementPackage::LASER) {
-      ekf_.x_ << measurement_pack.raw_measurements_[0], measurement_pack.raw_measurements_[1], 0, 0;
+      px = measurement_pack.raw_measurements_[0];
+      py = measurement_pack.raw_measurements_[1];
     }
+
+    ekf_.x_ << px, py, 0, 0;
 
 
     // done initializing, no need to predict or update
