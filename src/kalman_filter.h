@@ -64,6 +64,15 @@ public:
    */
   void UpdateEKF(const Eigen::VectorXd &z);
 
+private:
+  /**
+  * Updates the state regardless of Radar or Lidar
+  * @param z      The measurement at k+1
+  * @param z_pred Previous measurement
+  */
+  void update(const Eigen::VectorXd &z, const Eigen::VectorXd &z_pred);
+
+
 };
 
 #endif /* KALMAN_FILTER_H_ */
