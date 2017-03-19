@@ -67,10 +67,11 @@ public:
 private:
   /**
   * Updates the state regardless of Radar or Lidar
-  * @param z      The measurement at k+1
-  * @param z_pred Previous measurement
+  * @param z      difference vector
   */
-  void update(const Eigen::VectorXd &z, const Eigen::VectorXd &z_pred);
+  void update(const Eigen::VectorXd &y);
+
+  const float SMALL_NUMBER = 0.0001;
 
 
 };
