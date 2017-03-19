@@ -26,6 +26,25 @@ void KalmanFilter::Predict() {
 
 void KalmanFilter::Update(const VectorXd &z) {
   VectorXd z_pred = H_ * x_;
+  update(z, z_pred);
+}
+
+void KalmanFilter::UpdateEKF(const VectorXd &z) {
+  double px = x_[0];
+  double py = x_[1];
+  double vx = x_[2];
+  double vy = x_[3];
+
+  double rho = sqrt(px * px + py * py);
+  double phi = atan(py / px);
+  double d_rho = (px * vx + py * vy) / sqrt(px * px + py * py);
+
+  VectorXd z_pred(3);
+  z_pred << rho, phi, d_rho;
+  update(z, z_pred);
+}
+
+void KalmanFilter::update(const VectorXd &z, const VectorXd &z_pred) {
   VectorXd y = z - z_pred;
   MatrixXd Ht = H_.transpose();
   MatrixXd S = H_ * P_ * Ht + R_;
@@ -33,41 +52,8 @@ void KalmanFilter::Update(const VectorXd &z) {
   MatrixXd PHt = P_ * Ht;
   MatrixXd K = PHt * Si;
 
-  //new estimate
   x_ = x_ + (K * y);
   long x_size = x_.size();
   MatrixXd I = MatrixXd::Identity(x_size, x_size);
   P_ = (I - K * H_) * P_;
-}
-
-void KalmanFilter::UpdateEKF(const VectorXd &z) {
-
-  h(x) = Jacobian * (x)
-  z = h(x) + nu
-  x = f(x) + omega
-
-    y = z - H*x
-
-  Tools tools;
-  MatrixXd jacobian = tools.CalculateJacobian(x_);
-
-  VectorXd z_pred = jacobian * x_;
-  //VectorXd z_pred = jacobian.array() * x_.array();
-  VectorXd y = z - z_pred;
-  MatrixXd jacobianTranspose = jacobian.transpose();
-  MatrixXd S = jacobian * P_ * jacobianTranspose + R_;
-  MatrixXd Si = S.inverse();
-  MatrixXd PHt = P_ * jacobianTranspose;
-  MatrixXd K = PHt * Si;
-
-  //new estimate
-  //todo convert 'y' to cartesian ??
-  x_ = x_ + (K * y);
-  long x_size = x_.size();
-  MatrixXd I = MatrixXd::Identity(x_size, x_size);
-  P_ = (I - K * H_) * P_;
-
-  /**
-    * update the state by using Extended Kalman Filter equations
-  */
 }
